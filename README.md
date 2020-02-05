@@ -1,5 +1,8 @@
 # Eastgardens
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/63bda21becce93053241/maintainability)](https://codeclimate.com/github/ace-teknologi/eastgardens/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/63bda21becce93053241/test_coverage)](https://codeclimate.com/github/ace-teknologi/eastgardens/test_coverage)
+
 ![Found](./302.jpg)
 
 A Cloudfront / Lambda@Edge setup to redirect HTTP requests.
