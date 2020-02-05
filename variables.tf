@@ -2,9 +2,14 @@ variable "acm_certificate_arn" {
   description = "You'll need to provide a certificate for Cloudfront to use"
 }
 
+variable "custom_fallthrough_response" {
+  description = "A custom response if no custom_redirects match"
+  default     = ""
+}
+
 variable "custom_redirects" {
   description = "Your custom redirects"
-  default = ""
+  default     = ""
 }
 
 variable "host" {
@@ -17,6 +22,7 @@ variable "minimum_protocol_version" {
 
 variable "redirect_host" {
   description = "Where to redirect to"
+  default     = ""
 }
 
 variable "ssl_support_method" {

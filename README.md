@@ -19,7 +19,7 @@ patient if you update the module.
 
 ```hcl2
 module "www_redirect" {
-  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.0.1
+  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
 
   host = "www.mygreatwebsite.com"
   redirect_host = "mygreatwebsite.com"
@@ -31,17 +31,62 @@ module "www_redirect" {
 
 ```hcl2
 module "endpoint_redirect" {
-  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.0.1
+  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
 
   host = "my-old-website.com"
   redirect_host = "my-new-website.com"
 
+  # Note: custom_redirects must be a python dict for now
   custom_redirects = <<EOF
-  '/stupid-additional-app-that-my-server-used-to-run': 'https://my-new-app.com/',
-  '/weird-custom-shit/page1': 'https://new-app.com/1'
+  {
+    '/stupid-additional-app-that-my-server-used-to-run': 'https://my-new-app.com/',
+    '/weird-custom-shit/page1': 'https://new-app.com/1'
+  }
   EOF
   acm_certificate_arn = aws_acm_certificate_validation.my_cert.arn
 }
 
 
+### Expire most of your old content but save a few select links
+```hcl2
+module "limited_redirect" {
+  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
 
+  providers = {
+    aws = "aws.us-east-1"
+  }
+
+  host             = "my.old.website"
+  custom_redirects = <<EOF
+  {
+    '/content/that-i-need': 'https://my.new.website.com/this-is-my-link'
+  }
+  EOF
+
+  custom_fallthrough_response = <<EOF
+  {
+        'status': '410',
+        'statusDescription': 'Gone',
+        'headers': {
+            'content-type': [{
+                'key': 'Content-Type',
+                'value': 'text/html'
+            }]
+        },
+        'body': """
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <title>This content is gone</title>
+        </head>
+        <body>
+          <p>This content is gone</p>
+        </body>
+        </html>
+        """
+    }
+  EOF
+
+  acm_certificate_arn = data.aws_acm_certificate.my_cert.arn
+}
+```
