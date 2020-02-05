@@ -81,19 +81,28 @@ resource "aws_lambda_function" "eastgardens" {
 
 }
 
-data "template_file" "eastgardens" {
-  template = file("${path.module}/templates/eastgardens.py.tpl")
+data "template_file" "variables" {
+  template = file("${path.module}/templates/variables.py.tpl")
   vars = {
-    host             = var.redirect_host
-    custom_redirects = var.custom_redirects
+    fallthrough = var.custom_fallthrough_response
+    host        = var.redirect_host
+    redirects   = var.custom_redirects
   }
 }
 
 data "archive_file" "eastgardens" {
-  type                    = "zip"
-  source_content          = data.template_file.eastgardens.rendered
-  source_content_filename = "eastgardens.py"
-  output_path             = "eastgardens.zip"
+  type        = "zip"
+  output_path = "eastgardens.zip"
+
+  source {
+    content  = file("${path.module}/src/eastgardens.py")
+    filename = "eastgardens.py"
+  }
+
+  source {
+    content  = data.template_file.variables.rendered
+    filename = "variables.py"
+  }
 }
 
 resource "aws_iam_role" "eastgardens" {
