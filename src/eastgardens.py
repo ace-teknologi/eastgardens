@@ -22,7 +22,7 @@ def eastgardens(event, context):
 
     # We also support path+query based custom redirects
     if path + query in variables.REDIRECTS:
-        return redirect(variables.REDIRECTS(path + query))
+        return redirect(variables.REDIRECTS[path + query])
 
     # If no fallthough response provider, 302 the whole website to the HOST that
     # was input
