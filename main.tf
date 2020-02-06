@@ -63,10 +63,16 @@ locals {
   timestamp = replace(timestamp(), "/[TZ\\-\\:]/", "")
 }
 
+resource "random_pet" "eastgardens" {
+  keepers = {
+    file_md5 = data.archive_file.eastgardens.output_md5
+  }
+}
+
 # @TODO work out how to taint this if we change the code - probably by modifying the zip below
 resource "aws_lambda_function" "eastgardens" {
   filename      = data.archive_file.eastgardens.output_path
-  function_name = "Eastgardens-${local.timestamp}"
+  function_name = "Eastgardens-${random_pet.eastgardens.id}"
   handler       = "eastgardens.eastgardens"
   role          = aws_iam_role.eastgardens.arn
   description   = "HTTP 302 redirect function"
@@ -76,7 +82,6 @@ resource "aws_lambda_function" "eastgardens" {
   lifecycle {
     # These things are really hard to delete!!
     create_before_destroy = true
-    ignore_changes        = [function_name]
   }
 
 }
