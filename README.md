@@ -21,8 +21,10 @@ patient if you update the module.
 module "www_redirect" {
   source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
 
-  host = "www.mygreatwebsite.com"
-  redirect_host = "mygreatwebsite.com"
+  namespace = "MyGreatWebsite"
+
+  hosts               = ["www.mygreatwebsite.com"]
+  redirect_host       = "mygreatwebsite.com"
   acm_certificate_arn = aws_acm_certificate_validation.my_cert.arn
 }
 ```
@@ -33,7 +35,9 @@ module "www_redirect" {
 module "endpoint_redirect" {
   source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
 
-  host = "my-old-website.com"
+  namespace = "MyNewWebsite"
+
+  hosts         = ["my-old-website.com", "prod.my-old-website.com"]
   redirect_host = "my-new-website.com"
 
   # Note: custom_redirects must be a python dict for now
@@ -52,11 +56,13 @@ module "endpoint_redirect" {
 module "limited_redirect" {
   source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
 
+  namespace = "MyNewWithOldStuffWebsite"
+
   providers = {
     aws = "aws.us-east-1"
   }
 
-  host             = "my.old.website"
+  hosts            = ["my.old.website"]
   custom_redirects = <<EOF
   {
     '/content/that-i-need': 'https://my.new.website.com/this-is-my-link'

@@ -12,12 +12,17 @@ variable "custom_redirects" {
   default     = ""
 }
 
-variable "host" {
-  description = "The domain which would would like to redirect"
+variable "hosts" {
+  description = "The domains which would would like to redirect"
+  type        = list
 }
 
 variable "minimum_protocol_version" {
   default = "TLSv1.2_2018"
+}
+
+variable "namespace" {
+  description = "A simple unique namespace in case you need a few of these - used for roles etc"
 }
 
 variable "redirect_host" {

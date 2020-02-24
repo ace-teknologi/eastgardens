@@ -1,9 +1,9 @@
 resource "aws_cloudfront_distribution" "distribution" {
-  comment = "302 redirect distribution for ${var.host} created by Eastgardens"
+  comment = "302 redirect distribution for ${var.namespace} created by Eastgardens"
 
   enabled = true
 
-  aliases = [var.host]
+  aliases = var.hosts
 
   price_class = "PriceClass_All"
 
@@ -72,7 +72,7 @@ resource "random_pet" "eastgardens" {
 # @TODO work out how to taint this if we change the code - probably by modifying the zip below
 resource "aws_lambda_function" "eastgardens" {
   filename      = data.archive_file.eastgardens.output_path
-  function_name = "Eastgardens-${random_pet.eastgardens.id}"
+  function_name = "Eastgardens-${var.namespace}-${random_pet.eastgardens.id}"
   handler       = "eastgardens.eastgardens"
   role          = aws_iam_role.eastgardens.arn
   description   = "HTTP 302 redirect function"
@@ -112,7 +112,7 @@ data "archive_file" "eastgardens" {
 
 resource "aws_iam_role" "eastgardens" {
   path               = "/machine/"
-  name               = "Eastgardens"
+  name               = "Eastgardens${var.namespace}"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -131,7 +131,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 }
 
 resource "aws_iam_policy_attachment" "eastgardens" {
-  name       = "EastgardensLogging"
+  name       = "EastgardensLogging${var.namespace}"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   roles      = [aws_iam_role.eastgardens.name]
 }
