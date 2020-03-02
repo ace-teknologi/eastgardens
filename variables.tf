@@ -9,7 +9,7 @@ variable "custom_fallthrough_response" {
 
 variable "custom_redirects" {
   description = "Your custom redirects"
-  default     = ""
+  default     = "{}"
 }
 
 variable "hosts" {
