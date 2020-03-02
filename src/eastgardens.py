@@ -26,7 +26,7 @@ def eastgardens(event, context):
 
     # If no fallthough response provider, 302 the whole website to the HOST that
     # was input
-    if variables.FALLTHROUGH == '':
+    if variables.FALLTHROUGH == None:
         return redirect('//' + variables.HOST + path + query)
     # If we asked to fallthrough to the origin, just return the original request
     # so that Cloudfront continues on its merry way

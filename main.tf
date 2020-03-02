@@ -86,10 +86,16 @@ resource "aws_lambda_function" "eastgardens" {
 
 }
 
+locals {
+  # If fallthrough is origin, wrap it in quotes so it is nice for python
+  # @TODO have a boolean for origin_fallthrough that does this
+  fallthrough = var.custom_fallthrough_response == "origin" ? "'origin'" : var.custom_fallthrough_response
+}
+
 data "template_file" "variables" {
   template = file("${path.module}/templates/variables.py.tpl")
   vars = {
-    fallthrough = var.custom_fallthrough_response
+    fallthrough = local.fallthrough
     host        = var.redirect_host
     redirects   = var.custom_redirects
   }

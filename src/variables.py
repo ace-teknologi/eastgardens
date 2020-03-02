@@ -1,3 +1,3 @@
-FALLTHROUGH = ''
+FALLTHROUGH = None
 HOST = ''
 REDIRECTS = {}
