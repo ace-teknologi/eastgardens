@@ -4,7 +4,7 @@ variable "acm_certificate_arn" {
 
 variable "custom_fallthrough_response" {
   description = "A custom response if no custom_redirects match"
-  default     = ""
+  default     = "None"
 }
 
 variable "custom_redirects" {
