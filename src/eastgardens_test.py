@@ -29,7 +29,8 @@ def test_eastgarders_redirects():
 
 def test_eastgarders_redirects_query():
     variables.REDIRECTS = {
-        '/a-hit?where=here': 'https://great-site.com/kitten-videos'}
+        '/a-hit?where=here': 'https://great-site.com/kitten-videos',
+        '/a-hit': 'https://terrible-site.com/kitten-videos'}
     response = eastgardens(
         {'Records': [{'cf': {'request': {'uri': '/a-hit', 'otherstuff': 'yeah', 'querystring': 'where=here'}}}]}, None)
     assert response == {'headers': {'location': [
