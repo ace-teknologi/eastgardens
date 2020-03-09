@@ -57,10 +57,8 @@ resource "aws_cloudfront_distribution" "distribution" {
     ssl_support_method       = var.ssl_support_method
     minimum_protocol_version = var.minimum_protocol_version
   }
-}
 
-locals {
-  timestamp = replace(timestamp(), "/[TZ\\-\\:]/", "")
+  tags = var.tags
 }
 
 resource "random_pet" "eastgardens" {
@@ -69,14 +67,15 @@ resource "random_pet" "eastgardens" {
   }
 }
 
-# @TODO work out how to taint this if we change the code - probably by modifying the zip below
 resource "aws_lambda_function" "eastgardens" {
-  filename      = data.archive_file.eastgardens.output_path
-  function_name = "Eastgardens-${var.namespace}-${random_pet.eastgardens.id}"
+  s3_bucket = var.artifacts_bucket
+  s3_key    = aws_s3_bucket_object.eastgardens.key
+
+  function_name = "${var.namespace}-${random_pet.eastgardens.id}"
   handler       = "eastgardens.eastgardens"
   role          = aws_iam_role.eastgardens.arn
   description   = "HTTP 302 redirect function"
-  runtime       = "python3.7" # cloudfront doesn't support 3.8 yet
+  runtime       = "python3.8"
   publish       = true
 
   lifecycle {
@@ -84,12 +83,29 @@ resource "aws_lambda_function" "eastgardens" {
     create_before_destroy = true
   }
 
+  tags = var.tags
 }
 
 locals {
   # If fallthrough is origin, wrap it in quotes so it is nice for python
   # @TODO have a boolean for origin_fallthrough that does this
   fallthrough = var.custom_fallthrough_response == "origin" ? "'origin'" : var.custom_fallthrough_response
+}
+
+# Create the lambda and upload it to s3 so we can deploy. This is a little
+# convoluted, but basically we'll save the zip base64 encoded in the plan, so
+# that apply is independent of any other artifacts apart from the plan itself.
+
+resource "aws_s3_bucket_object" "eastgardens" {
+  bucket         = var.artifacts_bucket
+  key            = "${lower(var.namespace)}/${random_pet.eastgardens.id}"
+  content_base64 = data.local_file.eastgardens.content_base64
+
+  tags = var.tags
+}
+
+data "local_file" "eastgardens" {
+  filename = data.archive_file.eastgardens.output_path
 }
 
 data "template_file" "variables" {
@@ -116,9 +132,11 @@ data "archive_file" "eastgardens" {
   }
 }
 
+# Permissions
+
 resource "aws_iam_role" "eastgardens" {
   path               = "/machine/"
-  name               = "Eastgardens${var.namespace}"
+  name               = var.namespace
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -132,12 +150,11 @@ data "aws_iam_policy_document" "lambda_assume" {
         "lambda.amazonaws.com",
       ]
     }
-
   }
 }
 
 resource "aws_iam_policy_attachment" "eastgardens" {
-  name       = "EastgardensLogging${var.namespace}"
+  name       = "${var.namespace}Logging"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
   roles      = [aws_iam_role.eastgardens.name]
 }

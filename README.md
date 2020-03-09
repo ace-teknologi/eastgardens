@@ -26,6 +26,8 @@ module "www_redirect" {
   hosts               = ["www.mygreatwebsite.com"]
   redirect_host       = "mygreatwebsite.com"
   acm_certificate_arn = aws_acm_certificate_validation.my_cert.arn
+
+  artifacts_bucket = "my-great-bucket-for-building-things"
 }
 ```
 
@@ -48,6 +50,8 @@ module "endpoint_redirect" {
   }
   EOF
   acm_certificate_arn = aws_acm_certificate_validation.my_cert.arn
+
+  artifacts_bucket = "my-great-bucket-for-building-things"
 }
 
 
@@ -94,5 +98,7 @@ module "limited_redirect" {
   EOF
 
   acm_certificate_arn = data.aws_acm_certificate.my_cert.arn
+
+  artifacts_bucket = "my-great-bucket-for-building-things"
 }
 ```
