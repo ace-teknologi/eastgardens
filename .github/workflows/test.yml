@@ -20,10 +20,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest
           pip install pytest-cov
-      - name: Run tests & publish coverage
+      - name: Run tests
+        run: pytest src/ --cov=src/
+      - name: Publish coverage
         uses: paambaati/codeclimate-action@v2.5.4
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
         with:
-          coverageCommand: pytest src/ --cov=src/
+          coverageCommand: coverage
           debug: true
