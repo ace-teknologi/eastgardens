@@ -19,7 +19,7 @@ patient if you update the module.
 
 ```hcl2
 module "www_redirect" {
-  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
+  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.3.0"
 
   namespace = "MyGreatWebsite"
 
@@ -35,7 +35,7 @@ module "www_redirect" {
 
 ```hcl2
 module "endpoint_redirect" {
-  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
+  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.3.0"
 
   namespace = "MyNewWebsite"
 
@@ -58,7 +58,7 @@ module "endpoint_redirect" {
 ### Expire most of your old content but save a few select links
 ```hcl2
 module "limited_redirect" {
-  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.1.0"
+  source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.3.0"
 
   namespace = "MyNewWithOldStuffWebsite"
 
