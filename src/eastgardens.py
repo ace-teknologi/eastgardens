@@ -24,6 +24,13 @@ def eastgardens(event, context):
     if path + query in variables.REDIRECTS:
         return redirect(variables.REDIRECTS[path + query])
 
+    return handle_fallthrough(event, path, query)
+
+
+def handle_fallthrough(event, path, query):
+    """
+    Handles the fallthrough cases where no redirects were matched
+    """
     # If no fallthough response provider, 302 the whole website to the HOST that
     # was input
     if variables.FALLTHROUGH == None:

@@ -2,8 +2,12 @@ variable "acm_certificate_arn" {
   description = "You'll need to provide a certificate for Cloudfront to use"
 }
 
+variable "artifacts_bucket" {
+  description = "A pre-existing artifacts bucket that you like to use for storing build artifacts."
+}
+
 variable "custom_fallthrough_response" {
-  description = "A custom response if no custom_redirects match"
+  description = "A custom response if no custom_redirects match. This should be a valid python object"
   default     = "None"
 }
 
@@ -23,6 +27,7 @@ variable "minimum_protocol_version" {
 
 variable "namespace" {
   description = "A simple unique namespace in case you need a few of these - used for roles etc"
+  default     = "Eastgardens"
 }
 
 variable "redirect_host" {
@@ -32,4 +37,8 @@ variable "redirect_host" {
 
 variable "ssl_support_method" {
   default = "sni-only"
+}
+
+variable "tags" {
+  default = {}
 }
