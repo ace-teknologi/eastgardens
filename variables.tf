@@ -35,6 +35,11 @@ variable "redirect_host" {
   default     = ""
 }
 
+variable "retain_on_delete" {
+  description = "Enable this so that your runs don't fail due to the lambda@EDGE delete timing. You'll need to manually delete the distribution"
+  default     = false
+}
+
 variable "ssl_support_method" {
   default = "sni-only"
 }

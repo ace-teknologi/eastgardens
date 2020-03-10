@@ -58,6 +58,8 @@ resource "aws_cloudfront_distribution" "distribution" {
     minimum_protocol_version = var.minimum_protocol_version
   }
 
+  retain_on_delete = var.retain_on_delete
+
   tags = var.tags
 }
 
