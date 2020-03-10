@@ -16,13 +16,13 @@ def eastgardens(event, context):
     if query != '':
         query = '?' + query
 
-    # Check if we have hit a custom redirect
-    if path in variables.REDIRECTS:
-        return redirect(variables.REDIRECTS[path])
-
-    # We also support path+query based custom redirects
+    # Path+query based custom redirects get checked first
     if path + query in variables.REDIRECTS:
         return redirect(variables.REDIRECTS[path + query])
+
+    # Now check path only custom redirects
+    if path in variables.REDIRECTS:
+        return redirect(variables.REDIRECTS[path])
 
     return handle_fallthrough(event, path, query)
 
