@@ -13,6 +13,10 @@ This module is not stable. If you are going to use it, please use version
 control. Also, lambda@edge functions are really difficult to delete, so be
 patient if you update the module.
 
+## AWS Provider
+
+Don't forget to pass in an AWS provider that is in us-east-1.
+
 ## Usage
 
 ### Basic use case - redirect www to the apex of your domain
@@ -20,6 +24,10 @@ patient if you update the module.
 ```hcl2
 module "www_redirect" {
   source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.3.0"
+
+  providers = {
+    aws = "aws.us-east-1"
+  }
 
   namespace = "MyGreatWebsite"
 
@@ -36,6 +44,10 @@ module "www_redirect" {
 ```hcl2
 module "endpoint_redirect" {
   source = "git::ssh://git@github.com/ace-teknologi/eastgardens?ref=v0.3.0"
+
+  providers = {
+    aws = "aws.us-east-1"
+  }
 
   namespace = "MyNewWebsite"
 
