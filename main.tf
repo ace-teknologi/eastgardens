@@ -119,9 +119,14 @@ data "template_file" "variables" {
   }
 }
 
+resource "random_id" "zip" {
+  prefix      = "eastgardens-"
+  byte_length = 8
+}
+
 data "archive_file" "eastgardens" {
   type        = "zip"
-  output_path = "eastgardens.zip"
+  output_path = "${random_id.zip.hex}.zip"
 
   source {
     content  = file("${path.module}/src/eastgardens.py")
