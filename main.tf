@@ -162,6 +162,23 @@ data "aws_iam_policy_document" "lambda_assume" {
 
 resource "aws_iam_policy_attachment" "eastgardens" {
   name       = "${var.namespace}Logging"
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  policy_arn = aws_iam_policy.logging.arn
   roles      = [aws_iam_role.eastgardens.name]
+}
+
+resource "aws_iam_policy" "logging" {
+  name   = "${var.namespace}Logging"
+  policy = data.aws_iam_policy_document.logging.json
+}
+
+data "aws_iam_policy_document" "logging" {
+  statement {
+    sid = "Log"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = ["*"]
+  }
 }
